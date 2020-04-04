@@ -34,24 +34,18 @@ const GlobalStyle = createGlobalStyle`
 		box-sizing: inherit;
 	}
 
-	a {
-		color: inherit;
-		text-decoration: none;
-	}
-
 	.link--icon::after {
 		display: none !important;
 	}
 
-	p {
-		a {
-			color: ${props => props.theme.primary};
+	a {
+		color: ${props => props.theme.primary};
+		text-decoration: none;
 
-			&:active,
-			&:focus,
-			&:hover {
-				text-decoration: underline;
-			}
+		&:active,
+		&:focus,
+		&:hover {
+			text-decoration: underline;
 		}
 	}
 

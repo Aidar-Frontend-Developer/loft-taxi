@@ -32,11 +32,12 @@ export const Text = styled.div`
     margin-bottom: 40px;
 `;
 
-export const Button = styled.button`
+export const Link = styled.a`
     color: ${props => props.theme.secondary};
     font-size: 16px;
     font-weight: 400;
-    text-decoration: none;
+    border: none;
+    background: none;
 `;
 
 export const Label = styled.label`

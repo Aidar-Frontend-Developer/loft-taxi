@@ -5,7 +5,7 @@ import Heading from '../../shared/Heading';
 import Input from '../../shared/Input';
 import Submit from '../../shared/Submit';
 
-import { StyledLogin, Form, FormContainer, Text, Button, Label } from './StyledLogin';
+import { StyledLogin, Form, FormContainer, Text, Link, Label } from './StyledLogin';
 
 class Login extends Component {
     handleSubmit = event => {
@@ -23,7 +23,7 @@ class Login extends Component {
                     <Heading title="Войти" />
                     <Text>
                         Новый пользователь?&nbsp;
-                        <Button onClick={this.showSignupPage}>Зарегистрируйтесь</Button>
+                        <Link onClick={this.showSignupPage}>Зарегистрируйтесь</Link>
                     </Text>
                     <Form onSubmit={this.handleSubmit}>
                         <Label htmlFor="username">Имя пользователя*</Label>

@@ -5,6 +5,9 @@ export const Wrapper = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    -ms-flex-align: center;
+    background-color: ${props => props.theme.lightGray};
+    margin-bottom: 15px;
 `;
 
 export const Button = styled.button`
@@ -15,6 +18,7 @@ export const Button = styled.button`
     background-color: ${props => (props.active ? props.theme.orange : 'transparent')};
     border-radius: 10px;
     outline: none;
+    border: none;
 `;
 
 export const List = styled.ul`
