@@ -4,8 +4,8 @@ import Header from './components/Header';
 
 import Map from './components/pages/Map';
 import Profile from './components/pages/Profile';
-import LogIn from './components/pages/LogIn';
-import SingUp from './components/pages/SingUp';
+import Login from './components/pages/Login';
+import Signup from './components/pages/Signup';
 
 class App extends Component {
     state = {
@@ -20,8 +20,8 @@ class App extends Component {
         const pages = {
             map: () => <Map />,
             profile: () => <Profile />,
-            login: (setPage) => <LogIn setPage={setPage} />,
-            signup: (setPage) => <SingUp setPage={setPage} />,
+            login: (setPage) => <Login setPage={setPage} />,
+            signup: (setPage) => <Signup setPage={setPage} />,
         };
 
         return page === 'login' || page === 'signup' ? (
