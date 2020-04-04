@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 
 import Header from './components/Header';
 
@@ -7,24 +7,32 @@ import Profile from './components/pages/Profile';
 import LogIn from './components/pages/LogIn';
 import SingUp from './components/pages/SingUp';
 
-const pages = {
-    map: () => <Map />,
-    profile: () => <Profile />,
-    login: (setPage) => <LogIn setPage={setPage} />,
-    signup: (setPage) => <SingUp setPage={setPage} />,
-};
+class App extends Component {
+    state = {
+        page: 'login',
+    };
 
-export const App = () => {
-    const [page, setPage] = useState('login');
+    setPage = (page) => this.setState({ page });
 
-    return page === 'login' || page === 'signup' ? (
-        <>{pages[page](setPage)}</>
-    ) : (
-        <>
-            <Header page={page} setPage={setPage} />
-            {pages[page](setPage)}
-        </>
-    );
-};
+    render() {
+        const { page } = this.state;
+
+        const pages = {
+            map: () => <Map />,
+            profile: () => <Profile />,
+            login: (setPage) => <LogIn setPage={setPage} />,
+            signup: (setPage) => <SingUp setPage={setPage} />,
+        };
+
+        return page === 'login' || page === 'signup' ? (
+            <>{pages[page](this.setPage)}</>
+        ) : (
+            <>
+                <Header page={page} setPage={this.setPage} />
+                {pages[page](this.setPage)}
+            </>
+        );
+    }
+}
 
 export default App;
