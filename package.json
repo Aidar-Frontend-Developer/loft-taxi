@@ -1,34 +1,65 @@
 {
-  "name": "loft-taxi",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    "name": "loft-taxi",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@testing-library/jest-dom": "^4.2.4",
+        "@testing-library/react": "^9.3.2",
+        "@testing-library/user-event": "^7.1.2",
+        "node-sass": "^4.13.1",
+        "normalize.css": "^8.0.1",
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1",
+        "react-scripts": "3.4.1",
+        "styled-components": "^5.0.1"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "prettier": "prettier --write src/App.js src/components/*/*",
+        "linter": "eslint src/App.js src/components/*/*",
+        "commitmsg": "validate-commit-msg",
+        "commit": "git-cz",
+        "release": "standard-version"
+    },
+    "config": {
+        "validate-commit-msg": {
+            "maxSubjectLength": 72,
+            "types": "conventional-commit-types"
+        },
+        "commitizen": {
+            "path": "cz-conventional-changelog"
+        }
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "babel-eslint": "^10.0.3",
+        "commitizen": "^4.0.3",
+        "cz-conventional-changelog": "^3.1.0",
+        "eslint": "^6.6.0",
+        "eslint-config-airbnb": "^18.0.1",
+        "eslint-config-prettier": "^6.5.0",
+        "eslint-plugin-import": "^2.18.2",
+        "eslint-plugin-react": "^7.16.0",
+        "husky": "^4.2.3",
+        "prettier": "^1.18.2",
+        "standard-version": "^7.1.0",
+        "validate-commit-msg": "^2.14.0"
+    }
 }
