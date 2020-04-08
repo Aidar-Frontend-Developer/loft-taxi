@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
 export const Wrapper = styled.header`
-    padding: 20px;
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     -ms-flex-align: center;
     background-color: ${props => props.theme.lightGray};
-    margin-bottom: 15px;
+    height: 85px;
 `;
 
 export const Button = styled.button`
