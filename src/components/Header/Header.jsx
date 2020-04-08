@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import Logo from '../shared/Logo';
 
 import { Wrapper, Button, List, Item } from './StyledHeader';
 
 class Header extends Component {
-    onClick = (link) => {
-        return () => this.props.setPage(link);
+    static propTypes = {
+        page: PropTypes.number.isRequired,
     };
+
+    onClick = link => this.props.setPage(link);
 
     render() {
         const { page } = this.props;
