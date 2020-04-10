@@ -1,45 +1,82 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-import Logo from '../../shared/Logo';
-import Heading from '../../shared/Heading';
-import Input from '../../shared/Input';
-import Submit from '../../shared/Submit';
+import TextField from '@material-ui/core/TextField';
+import Link from '@material-ui/core/Link';
 
-import { StyledSignup, Form, FormContainer, Text, Link, Label } from './StyledSignup';
+import {
+    StyledSignup,
+    StyledHeading,
+    StyledForm,
+    SubmitButton,
+    StyledTypography,
+} from './StyledSignup';
 
-class SingUp extends Component {
-    handleSubmit = event => {
-        event.preventDefault();
-        this.props.setPage('map');
-    };
+const Signup = ({ onSubmitForm, onChangeToLogin }) => (
+    <StyledSignup data-testid="signup">
+        <StyledHeading variant="h1">Регистрация</StyledHeading>
+        <StyledTypography component="p" paragraph={true}>
+            Уже зарегистрированы?&nbsp;
+            <Link onClick={onChangeToLogin} data-testid="onChangeToLogin">
+                Зарегистрируйтесь
+            </Link>
+        </StyledTypography>
+        <StyledForm onSubmit={onSubmitForm}>
+            <TextField
+                required
+                fullWidth
+                name="newEmail"
+                label="Адрес электронной почты"
+                type="email"
+                id="newEmail"
+                placeholder="Введите адрес"
+                defaultValue="test@test.com"
+            />
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="newName"
+                label="Имя"
+                type="text"
+                id="newName"
+                placeholder="Введите имя"
+                defaultValue="Тест"
+            />
 
-    showLoginPage = () => this.props.setPage('login');
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="newSurname"
+                label="Фамилия"
+                type="text"
+                id="newSurname"
+                placeholder="Введите фамилию"
+                defaultValue="Тест"
+            />
 
-    render() {
-        return (
-            <StyledSignup>
-                <Logo />
-                <FormContainer>
-                    <Heading title="Войти" />
-                    <Text>
-                        Уже зарегистрирован?&nbsp;
-                        <Link onClick={this.showLoginPage}>Войти</Link>
-                    </Text>
-                    <Form onSubmit={this.handleSubmit}>
-                        <Label htmlFor="newEmail">Адрес электронной почты</Label>
-                        <Input type="email" id="newEmail" placeholder="Введите адрес" />
-                        <Label htmlFor="newName">Имя</Label>
-                        <Input type="text" id="newName" placeholder="Введите имя" />
-                        <Label htmlFor="newSurname">Фамилия</Label>
-                        <Input type="text" id="newSurname" placeholder="Введите фамилию" />
-                        <Label htmlFor="newPassword">Пароль</Label>
-                        <Input type="password" id="newPassword" placeholder="Введите пароль" />
-                        <Submit name="Зарегистрироваться" />
-                    </Form>
-                </FormContainer>
-            </StyledSignup>
-        );
-    }
-}
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="newPassword"
+                label="Пароль"
+                type="password"
+                id="newPassword"
+                placeholder="Введите пароль"
+                defaultValue="123123"
+            />
+            <SubmitButton
+                data-testid="auth-btn"
+                type="submit"
+                size="medium"
+                variant="contained"
+                color="primary"
+            >
+                Зарегистрироваться
+            </SubmitButton>
+        </StyledForm>
+    </StyledSignup>
+);
 
-export default SingUp;
+export default Signup;
