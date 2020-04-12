@@ -1,44 +1,41 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import Logo from '../shared/Logo';
+import AppBar from '@material-ui/core/AppBar';
 
-import { Wrapper, Button, List, Item } from './StyledHeader';
+import Logo from '../Logo';
+import { StyledToolbar, StyledButton } from './StyledHeader';
 
-class Header extends Component {
-    onClick = (link) => {
-        return () => this.props.setPage(link);
-    };
+export const pages = [
+    { id: 0, name: 'Карта', page: 'map' },
+    { id: 1, name: 'Профиль', page: 'profile' },
+    { id: 2, name: 'Выйти', page: 'logout' },
+];
 
-    render() {
-        const { page } = this.props;
-        return (
-            <div className="container">
-                <Wrapper>
-                    <Logo />
-                    <nav>
-                        <List>
-                            <Item>
-                                <Button onClick={this.onClick('map')} active={page === 'map'}>
-                                    Карта
-                                </Button>
-                            </Item>
-                            <Item>
-                                <Button
-                                    onClick={this.onClick('profile')}
-                                    active={page === 'profile'}
-                                >
-                                    Профиль
-                                </Button>
-                            </Item>
-                            <Item>
-                                <Button onClick={this.onClick('login')}>Выйти</Button>
-                            </Item>
-                        </List>
-                    </nav>
-                </Wrapper>
-            </div>
-        );
-    }
-}
+const Header = ({ setPage }) => {
+    return (
+        <AppBar position="static" color="primary" elevation={0} data-testid="header">
+            <StyledToolbar>
+                <Logo colored="black" />
+                <nav>
+                    {pages.map(({ id, name, page }) => (
+                        <StyledButton
+                            key={id}
+                            color="default"
+                            onClick={() => setPage(page)}
+                            data-testid={`${page}-btn`}
+                        >
+                            {name}
+                        </StyledButton>
+                    ))}
+                </nav>
+            </StyledToolbar>
+        </AppBar>
+    );
+};
+
+Header.propTypes = {
+    setPage: PropTypes.func.isRequired,
+};
 
 export default Header;

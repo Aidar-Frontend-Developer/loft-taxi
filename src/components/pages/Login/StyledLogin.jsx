@@ -1,22 +1,8 @@
 import styled from 'styled-components';
-import loginBackround from '../../../assets/images/login-background.png';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
 export const StyledLogin = styled.div`
-    min-height: 100vh;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url('${loginBackround}');
-    background-size: cover;
-    background-position: center;
-    
-    @media (max-width: 800px) {
-        flex-direction: column;
-    }
-`;
-
-export const FormContainer = styled.div`
     margin-left: 200px;
     width: 500px;
     padding: 60px 50px;
@@ -28,27 +14,38 @@ export const FormContainer = styled.div`
     }
 `;
 
-export const Text = styled.div`
-    margin-bottom: 40px;
+export const StyledHeading = styled(Typography)`
+    && {
+        margin: 0 0 30px;
+        color: ${props => props.theme.darkGray};
+        font-size: 36px;
+        font-weight: 700;
+    }
 `;
 
-export const Link = styled.a`
-    color: ${props => props.theme.secondary};
-    font-size: 16px;
-    font-weight: 400;
-    border: none;
-    background: none;
+export const StyledForm = styled.form`
+    text-align: right;
 `;
 
-export const Label = styled.label`
-    margin-bottom: 8px;
-    display: block;
-    color: ${props => props.theme.gray};
-    font-size: 15px;
-    font-weight: 400;
+export const StyledTypography = styled(Typography)`
+    && {
+        margin-bottom: 30px;
+    }
 `;
 
-export const Form = styled.form`
-    display: flex;
-    flex-direction: column;
+export const SubmitButton = styled(Button)`
+    && {
+        align-self: flex-end;
+        font-weight: 500;
+        border: 0;
+        border-radius: 4px;
+        background-color: ${props => props.theme.orange};
+        padding: 10px;
+        margin-top: 16px;
+        color: ${props => props.theme.primary};
+
+        &:hover {
+            color: ${props => props.theme.white};
+        }
+    }
 `;

@@ -1,32 +1,20 @@
 import styled from 'styled-components';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
 
-export const Wrapper = styled.header`
-    padding: 20px;
-    display: flex;
+export const StyledToolbar = styled(Toolbar)`
+    flex-direction: row;
     justify-content: space-between;
-    align-items: center;
-    -ms-flex-align: center;
-    background-color: ${props => props.theme.lightGray};
-    margin-bottom: 15px;
+    background-color: ${props => props.theme.white};
 `;
 
-export const Button = styled.button`
-    padding: 10px 15px;
-    font-size: 16px;
-    font-weight: 400;
-    text-decoration: none;
-    background-color: ${props => (props.active ? props.theme.orange : 'transparent')};
-    border-radius: 10px;
-    outline: none;
-    border: none;
-`;
+export const StyledButton = styled(Button)`
+    && {
+        margin-right: 10px;
+        font-weight: 500;
 
-export const List = styled.ul`
-    display: flex;
-    list-style-type: none;
-`;
-
-export const Item = styled.li`
-    padding-left: 35px;
-    list-style-type: none;
+        :last-child {
+            margin-right: 0px;
+        }
+    }
 `;
