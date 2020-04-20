@@ -1,14 +1,22 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import configureMockStore from 'redux-mock-store';
+
 import Header from './Header';
 
-console.error = jest.fn();
+const mockStore = configureMockStore();
+const store = mockStore({
+    auth: { isAuthorized: true },
+});
 
-describe('Header', () => {
-    it('компонент отображается корректно', () => {
-        const { queryByTestId } = render(<Header />);
-
-        expect(console.error).toHaveBeenCalledTimes(1);
+describe('Компонент Header', () => {
+    it('отображается корректно', () => {
+        const { queryByTestId } = render(
+            <Router>
+                <Header store={store} />
+            </Router>,
+        );
         expect(queryByTestId('header')).toBeTruthy();
     });
 });

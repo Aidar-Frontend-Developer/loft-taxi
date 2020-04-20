@@ -1,41 +1,57 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
+
+import { removeItems } from '../services/localStorage';
+
+import { postLogOut } from '../../modules/Auth/actions';
 
 import AppBar from '@material-ui/core/AppBar';
 
 import Logo from '../Logo';
 import { StyledToolbar, StyledButton } from './StyledHeader';
 
-export const pages = [
-    { id: 0, name: 'Карта', page: 'map' },
-    { id: 1, name: 'Профиль', page: 'profile' },
-    { id: 2, name: 'Выйти', page: 'logout' },
-];
+const Header = ({ postLogOut, location: { pathname } }) => {
+    const handleCkickLogout = event => {
+        event.preventDefault();
 
-const Header = ({ setPage }) => {
+        removeItems('user');
+        postLogOut({ success: false, error: '' });
+    };
+
     return (
         <AppBar position="static" color="primary" elevation={0} data-testid="header">
             <StyledToolbar>
-                <Logo colored="black" />
+                <Link to="/">
+                    <Logo colored="black" />
+                </Link>
+
                 <nav>
-                    {pages.map(({ id, name, page }) => (
-                        <StyledButton
-                            key={id}
-                            color="default"
-                            onClick={() => setPage(page)}
-                            data-testid={`${page}-btn`}
-                        >
-                            {name}
-                        </StyledButton>
-                    ))}
+                    <StyledButton
+                        component={Link}
+                        to="/map"
+                        variant={'/map' === pathname ? 'contained' : 'text'}
+                    >
+                        Карта
+                    </StyledButton>
+                    <StyledButton
+                        component={Link}
+                        to="/profile"
+                        variant={'/profile' === pathname ? 'contained' : 'text'}
+                    >
+                        Профиль
+                    </StyledButton>
+                    <StyledButton component={Link} to="/" onClick={handleCkickLogout}>
+                        Выйти
+                    </StyledButton>
                 </nav>
             </StyledToolbar>
         </AppBar>
     );
 };
 
-Header.propTypes = {
-    setPage: PropTypes.func.isRequired,
+const mapDispatchToProps = {
+    postLogOut,
 };
 
-export default Header;
+export default withRouter(connect(null, mapDispatchToProps)(Header));

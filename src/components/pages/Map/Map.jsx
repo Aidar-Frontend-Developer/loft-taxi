@@ -1,5 +1,8 @@
 import React from 'react';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
+
+import Header from '../../Header';
 
 import { StyledMap } from './StyledMap';
 
@@ -20,10 +23,12 @@ class Map extends React.Component {
 
     render() {
         return (
-            <div data-testid="map">
-                <div />
-                <StyledMap ref={this.mapContainer} />
-            </div>
+            <>
+                <Header />
+                <div data-testid="map">
+                    <StyledMap ref={this.mapContainer} />
+                </div>
+            </>
         );
     }
 }
