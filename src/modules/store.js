@@ -1,37 +1,17 @@
 import { createStore, compose, applyMiddleware, combineReducers } from 'redux';
+import auth from './Auth/reducer';
+import card from './Profile/reducer';
 
-import { authReducer as auth } from '../modules/Auth/reducer';
-import { cardReducer as card } from '../modules/Profile/reducer';
+import { authMiddleware } from './Auth/middleware';
+import { profileMiddleware } from './Profile/middleware';
 
-import { authMiddleware } from '../modules/Auth/middleware';
-import { profileMiddleware } from '../modules/Profile/middleware';
-
-export const initialState = {
-    auth: {
-        isLoading: false,
-        isAuthorized: false,
-        error: '',
-        token: '',
-    },
-
-    card: {
-        isLoading: false,
-        hasCard: false,
-        cardNumber: '',
-        expiryDate: '',
-        cardName: '',
-        cvc: '',
-    },
-};
-
-const reducers = combineReducers({
+const rootReducers = combineReducers({
     auth,
     card,
 });
 
 const store = createStore(
-    reducers,
-    initialState,
+    rootReducers,
     compose(
         applyMiddleware(authMiddleware),
         applyMiddleware(profileMiddleware),

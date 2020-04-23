@@ -1,4 +1,5 @@
-import { initialState } from '../store';
+import { combineReducers } from 'redux';
+import { handleActions } from 'redux-actions';
 
 import {
     postCardRequest,
@@ -9,30 +10,66 @@ import {
     getCardFailure,
 } from './actions';
 
-export const cardReducer = (state = initialState.card, action) => {
-    switch (action.type) {
-        case postCardRequest.toString():
-            return { ...state, isLoading: true, error: '' };
-        case postCardSuccess.toString():
-            return { ...state, isLoading: false, hasCard: true, error: '' };
-        case postCardFailure.toString():
-            return { ...state, isLoading: false, hasCard: false, error: action.payload.error };
-        case getCardRequest.toString():
-            return { ...state, isLoading: true, error: '' };
-        case getCardSuccess.toString():
-            return {
-                ...state,
-                isLoading: false,
-                hasCard: true,
-                cardNumber: action.payload.cardNumber,
-                expiryDate: action.payload.expiryDate,
-                cardName: action.payload.cardName,
-                cvc: action.payload.cvc,
-                error: '',
-            };
-        case getCardFailure.toString():
-            return { ...state, isLoading: false, hasCard: false, error: action.payload.error };
-        default:
-            return state;
-    }
-};
+const isLoading = handleActions(
+    {
+        [postCardRequest]: () => true,
+        [postCardSuccess]: () => false,
+        [postCardFailure]: () => false,
+        [getCardRequest]: () => true,
+        [getCardSuccess]: () => false,
+        [getCardFailure]: () => false,
+    },
+    false,
+);
+
+const error = handleActions(
+    {
+        [postCardRequest]: () => null,
+        [postCardSuccess]: () => null,
+        [postCardFailure]: (_, action) => action.payload.error,
+        [getCardRequest]: () => null,
+        [getCardSuccess]: () => null,
+        [getCardFailure]: (_, action) => action.payload.error,
+    },
+    null,
+);
+
+const hasCard = handleActions(
+    {
+        [postCardSuccess]: () => true,
+        [postCardFailure]: () => false,
+        [getCardSuccess]: () => true,
+        [getCardFailure]: () => false,
+    },
+    false,
+);
+
+const cardNumber = handleActions(
+    {
+        [getCardSuccess]: (_, action) => action.payload.cardNumber,
+    },
+    '',
+);
+
+const expiryDate = handleActions(
+    {
+        [getCardSuccess]: (_, action) => action.payload.expiryDate,
+    },
+    '',
+);
+
+const cvc = handleActions(
+    {
+        [getCardSuccess]: (_, action) => action.payload.cvc,
+    },
+    '',
+);
+
+export default combineReducers({
+    isLoading,
+    error,
+    hasCard,
+    cardNumber,
+    expiryDate,
+    cvc,
+});

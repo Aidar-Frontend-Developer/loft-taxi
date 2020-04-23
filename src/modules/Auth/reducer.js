@@ -1,4 +1,5 @@
-import { initialState } from '../store';
+import { combineReducers } from 'redux';
+import { handleActions } from 'redux-actions';
 
 import {
     postLoginRequest,
@@ -10,32 +11,57 @@ import {
     postLogOut,
 } from './actions';
 
-export const authReducer = (state = initialState.auth, action) => {
-    switch (action.type) {
-        case postLoginRequest.toString():
-        case postRegisterRequest.toString():
-            return { ...state, isLoading: true, error: '' };
-        case postLoginSuccess.toString():
-        case postRegisterSuccess.toString():
-            return {
-                ...state,
-                isLoading: false,
-                isAuthorized: action.payload.success,
-                token: action.payload.token,
-                error: '',
-            };
-        case postLoginFailure.toString():
-        case postRegisterFailure.toString():
-            return {
-                ...state,
-                isLoading: false,
-                isAuthorized: action.payload.success,
-                token: '',
-                error: action.payload.error,
-            };
-        case postLogOut.toString():
-            return { ...state, isLoading: false, isAuthorized: false, token: '', error: '' };
-        default:
-            return state;
-    }
-};
+const isLoading = handleActions(
+    {
+        [postLoginRequest]: () => true,
+        [postRegisterRequest]: () => true,
+        [postLoginSuccess]: () => false,
+        [postRegisterSuccess]: () => false,
+        [postLoginFailure]: () => false,
+        [postRegisterFailure]: () => false,
+        [postLogOut]: () => false,
+    },
+    false,
+);
+
+const isAuthorized = handleActions(
+    {
+        [postLoginSuccess]: (_, action) => action.payload.success,
+        [postRegisterSuccess]: (_, action) => action.payload.success,
+        [postLoginFailure]: (_, action) => action.payload.success,
+        [postRegisterFailure]: (_, action) => action.payload.success,
+        [postLogOut]: () => false,
+    },
+    false,
+);
+
+const error = handleActions(
+    {
+        [postLoginRequest]: () => null,
+        [postRegisterRequest]: () => null,
+        [postLoginSuccess]: () => null,
+        [postRegisterSuccess]: () => null,
+        [postLoginFailure]: (_, action) => action.payload.error,
+        [postRegisterFailure]: (_, action) => action.payload.error,
+        [postLogOut]: () => null,
+    },
+    null,
+);
+
+const token = handleActions(
+    {
+        [postLoginSuccess]: (_, action) => action.payload.token,
+        [postRegisterSuccess]: (_, action) => action.payload.token,
+        [postLoginFailure]: () => null,
+        [postRegisterFailure]: () => null,
+        [postLogOut]: () => null,
+    },
+    null,
+);
+
+export default combineReducers({
+    isLoading,
+    isAuthorized,
+    error,
+    token,
+});
