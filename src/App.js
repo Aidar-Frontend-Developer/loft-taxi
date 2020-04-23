@@ -1,13 +1,16 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
-import Main from './components/pages/Main';
-
-import { AuthProvider } from './components/context/AuthContext';
+import store from './modules/store';
+import Router from './components/Router';
 
 const App = () => (
-    <AuthProvider>
-        <Main />
-    </AuthProvider>
+    <BrowserRouter>
+        <Provider store={store}>
+            <Router />
+        </Provider>
+    </BrowserRouter>
 );
 
 export default App;

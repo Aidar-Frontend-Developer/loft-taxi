@@ -1,36 +1,40 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { render, fireEvent } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
+
 import Auth from './Auth';
 
-describe('Auth', () => {
-    it('при инициализации рендерится форма входа', () => {
-        const { queryByTestId } = render(<Auth />);
+const mockStore = configureMockStore();
+const store = mockStore({
+    auth: { isAuthorized: false },
+});
 
-        expect(queryByTestId('login')).toBeTruthy();
+describe('Компонент Auth', () => {
+    const component = (
+        <Provider store={store}>
+            <Auth />
+        </Provider>
+    );
+
+    it('компонент отображается корректно', () => {
+        const div = document.createElement('div');
+        ReactDOM.render(component, div);
+        ReactDOM.unmountComponentAtNode(div);
     });
 
-    it('при инициализации не рендерится форма регистрации', () => {
-        const { queryByTestId } = render(<Auth />);
+    it('при инициализации не рендерит форму регистрации', () => {
+        const { queryByTestId } = render(component);
 
         expect(queryByTestId('signup')).toBeFalsy();
     });
 
     it(
-        'при клике на "Зарегистрироваться" в контейнере входа просходит переключение с ' +
-            'контейнера входа на контейнер регистрации',
-        () => {
-            const { getByTestId, queryByTestId } = render(<Auth />);
-
-            fireEvent.click(getByTestId('onChangeToSignup'));
-            expect(queryByTestId('signup')).toBeTruthy();
-        },
-    );
-
-    it(
         'при клике на "Войти" в контейнере регистрации просходит переключение с ' +
             'контейнера регистрации на контейнер входа',
         () => {
-            const { getByTestId, queryByTestId } = render(<Auth />);
+            const { getByTestId, queryByTestId } = render(component);
 
             fireEvent.click(getByTestId('onChangeToSignup'));
             fireEvent.click(getByTestId('onChangeToLogin'));
