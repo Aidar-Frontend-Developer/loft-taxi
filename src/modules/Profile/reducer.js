@@ -8,6 +8,8 @@ import {
     getCardRequest,
     getCardSuccess,
     getCardFailure,
+    profileShowWarning,
+    profileHideWarning,
 } from './actions';
 
 const isLoading = handleActions(
@@ -26,10 +28,10 @@ const error = handleActions(
     {
         [postCardRequest]: () => null,
         [postCardSuccess]: () => null,
-        [postCardFailure]: (_, action) => action.payload.error,
+        [postCardFailure]: (_, action) => action.payload,
         [getCardRequest]: () => null,
         [getCardSuccess]: () => null,
-        [getCardFailure]: (_, action) => action.payload.error,
+        [getCardFailure]: (_, action) => action.payload,
     },
     null,
 );
@@ -65,6 +67,22 @@ const cvc = handleActions(
     '',
 );
 
+const cardAdded = handleActions(
+    {
+        [postCardSuccess]: () => true,
+        [postCardFailure]: () => false,
+    },
+    false,
+);
+
+const warning = handleActions(
+    {
+        [profileShowWarning]: () => true,
+        [profileHideWarning]: () => false,
+    },
+    false,
+);
+
 export default combineReducers({
     isLoading,
     error,
@@ -72,4 +90,6 @@ export default combineReducers({
     cardNumber,
     expiryDate,
     cvc,
+    cardAdded,
+    warning,
 });

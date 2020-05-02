@@ -1,22 +1,36 @@
 import { createStore, compose, applyMiddleware, combineReducers } from 'redux';
-import auth from './Auth/reducer';
-import card from './Profile/reducer';
+import createSagaMiddleware from 'redux-saga';
+import authReducer from './Auth/reducer';
+import cardReducer from './Profile/reducer';
+import addressesReducer from './Addresses/reducer';
+import routeReducer from './Routes/reducer';
 
-import { authMiddleware } from './Auth/middleware';
-import { profileMiddleware } from './Profile/middleware';
+import rootSaga from './rootSaga';
 
 const rootReducers = combineReducers({
-    auth,
-    card,
+    auth: authReducer,
+    card: cardReducer,
+    addresses: addressesReducer,
+    route: routeReducer,
 });
 
-const store = createStore(
-    rootReducers,
-    compose(
-        applyMiddleware(authMiddleware),
-        applyMiddleware(profileMiddleware),
-        window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : noop => noop,
-    ),
-);
+const sagaMiddleware = createSagaMiddleware();
 
-export default store;
+const createAppStore = () => {
+    const store = createStore(
+        rootReducers,
+        compose(
+            applyMiddleware(sagaMiddleware),
+            applyMiddleware(),
+            window.__REDUX_DEVTOOLS_EXTENSION__
+                ? window.__REDUX_DEVTOOLS_EXTENSION__()
+                : noop => noop,
+        ),
+    );
+
+    sagaMiddleware.run(rootSaga);
+
+    return store;
+};
+
+export default createAppStore;

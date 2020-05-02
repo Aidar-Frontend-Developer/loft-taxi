@@ -1,18 +1,25 @@
 import React from 'react';
 import Header from '../../Header';
 import { connect } from 'react-redux';
-import { postCardRequest, getCardRequest } from '../../../modules/Profile/actions';
+import {
+    postCardRequest,
+    getCardRequest,
+    profileShowWarning,
+    profileHideWarning,
+} from '../../../modules/Profile/actions';
 
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 
+import InfoBlock from '../../../components/InfoBlock';
+
 import {
-    StyledForm,
     TitleTypography,
     SubtitleTypography,
     StyledProfile,
     StyledPaper,
+    Wrapper,
 } from './StyledProfile';
 
 import { StyledButton } from '../../shared/Button/StyledButton';
@@ -25,6 +32,10 @@ class Profile extends React.Component {
         cardName: '',
         cvc: '',
     };
+
+    componentWillUnmount() {
+        this.props.profileHideWarning();
+    }
 
     componentDidMount() {
         this.setState({ token: this.props.token });
@@ -48,80 +59,93 @@ class Profile extends React.Component {
         e.preventDefault();
         const { postCardRequest } = this.props;
         postCardRequest(this.state);
+        this.props.profileShowWarning();
     };
 
     handlerInputChange = event => this.setState({ [event.target.name]: event.target.value });
 
     render() {
+        const { cardInfo } = this.props;
+
         return (
             <Paper>
                 <Header />
                 <StyledProfile>
-                    <StyledForm onSubmit={this.handleSubmit}>
+                    <Wrapper>
                         <TitleTypography variant="h4">Профиль</TitleTypography>
                         <SubtitleTypography variant="body1">Способ оплаты</SubtitleTypography>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} sm={6}>
-                                <StyledPaper>
-                                    <div className="cardIco"></div>
-                                    <TextField
-                                        margin="normal"
-                                        fullWidth
-                                        name="cardNumber"
-                                        label="Номер карты:"
-                                        type="password"
-                                        id="cardNumber"
-                                        placeholder="Введите номер карты"
-                                        onChange={this.handlerInputChange}
-                                    />
+                        {cardInfo.warning ? (
+                            <InfoBlock
+                                descr="Платёжные данные обновлены. Теперь вы можете заказывать такси."
+                                linkText="Перейти на карту"
+                                linkUrl="/map"
+                            />
+                        ) : (
+                            <form onSubmit={this.handleSubmit}>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={12} sm={6}>
+                                        <StyledPaper>
+                                            <div className="cardIco"></div>
+                                            <TextField
+                                                margin="normal"
+                                                fullWidth
+                                                name="cardNumber"
+                                                label="Номер карты:"
+                                                type="password"
+                                                id="cardNumber"
+                                                placeholder="Введите номер карты"
+                                                onChange={this.handlerInputChange}
+                                            />
 
-                                    <TextField
-                                        margin="normal"
-                                        fullWidth
-                                        name="expiryDate"
-                                        label="Срок действия:"
-                                        type="text"
-                                        id="expiryDate"
-                                        placeholder="Введите срок действия"
-                                        onChange={this.handlerInputChange}
-                                    />
-                                </StyledPaper>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <StyledPaper>
-                                    <TextField
-                                        margin="normal"
-                                        fullWidth
-                                        name="cardName"
-                                        label="Имя владельца:"
-                                        type="text"
-                                        id="cardName"
-                                        placeholder="Введите имя владельца"
-                                        onChange={this.handlerInputChange}
-                                    />
-                                    <TextField
-                                        margin="normal"
-                                        fullWidth
-                                        name="cvc"
-                                        label="CVC:"
-                                        type="password"
-                                        id="cvc"
-                                        placeholder="Введите CVC"
-                                        onChange={this.handlerInputChange}
-                                    />
-                                </StyledPaper>
-                            </Grid>
-                        </Grid>
-                        <StyledButton
-                            type="submit"
-                            size="medium"
-                            variant="contained"
-                            color="primary"
-                        >
-                            Сохранить
-                        </StyledButton>
-                        <div className="toolTip"></div>
-                    </StyledForm>
+                                            <TextField
+                                                margin="normal"
+                                                fullWidth
+                                                name="expiryDate"
+                                                label="Срок действия:"
+                                                type="text"
+                                                id="expiryDate"
+                                                placeholder="Введите срок действия"
+                                                onChange={this.handlerInputChange}
+                                            />
+                                        </StyledPaper>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <StyledPaper>
+                                            <TextField
+                                                margin="normal"
+                                                fullWidth
+                                                name="cardName"
+                                                label="Имя владельца:"
+                                                type="text"
+                                                id="cardName"
+                                                placeholder="Введите имя владельца"
+                                                onChange={this.handlerInputChange}
+                                            />
+                                            <TextField
+                                                margin="normal"
+                                                fullWidth
+                                                name="cvc"
+                                                label="CVC:"
+                                                type="password"
+                                                id="cvc"
+                                                placeholder="Введите CVC"
+                                                onChange={this.handlerInputChange}
+                                            />
+                                        </StyledPaper>
+                                    </Grid>
+                                </Grid>
+                                <StyledButton
+                                    type="submit"
+                                    size="medium"
+                                    variant="contained"
+                                    color="primary"
+                                >
+                                    Сохранить
+                                </StyledButton>
+                                <div className="toolTip"></div>
+                            </form>
+                        )}
+                    </Wrapper>
                 </StyledProfile>
             </Paper>
         );
@@ -136,6 +160,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     postCardRequest,
     getCardRequest,
+    profileShowWarning,
+    profileHideWarning,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
