@@ -4,8 +4,6 @@ import { Redirect } from 'react-router-dom';
 
 import { postLoginRequest, postLoginSuccess } from '../../../modules/Auth/actions';
 
-import { getItems } from '../../services/localStorage';
-
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
@@ -18,14 +16,6 @@ class Login extends Component {
         email: '',
         password: '',
     };
-
-    componentDidMount() {
-        let userInfo = getItems('user');
-        if (userInfo !== null) {
-            const { postLoginSuccess } = this.props;
-            postLoginSuccess({ success: true, token: userInfo.token });
-        }
-    }
 
     handleChangeInput = event => this.setState({ [event.target.name]: event.target.value });
 

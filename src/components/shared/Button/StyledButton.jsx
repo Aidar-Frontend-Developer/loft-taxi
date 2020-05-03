@@ -11,7 +11,7 @@ export const StyledButton = styled(Button)`
         padding: 10px;
         margin-top: 16px;
         color: ${props => props.theme.primary};
-        font-size: 20px;
+        font-size: 14px;
         padding: 5px 30px;
         letter-spacing: 0.1px;
         text-transform: inherit;

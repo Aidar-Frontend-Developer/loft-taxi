@@ -13,10 +13,17 @@ export const StyledProfile = styled(Paper)`
     width: 100%;
     height: calc(100vh - 64px);
     background-image: url('${profileBackround}');
-    
 `;
 
 export const StyledForm = styled.form`
+    text-align: center;
+    max-width: 950px;
+    padding: 60px 70px;
+    background-color: ${props => props.theme.white};
+    border-radius: 3px;
+`;
+
+export const Wrapper = styled.div`
     text-align: center;
     max-width: 950px;
     padding: 60px 70px;

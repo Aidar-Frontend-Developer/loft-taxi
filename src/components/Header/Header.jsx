@@ -1,12 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
+import AppBar from '@material-ui/core/AppBar';
 
 import { removeItems } from '../services/localStorage';
-
 import { postLogOut } from '../../modules/Auth/actions';
-
-import AppBar from '@material-ui/core/AppBar';
 
 import Logo from '../Logo';
 import { StyledToolbar, StyledButton } from './StyledHeader';
