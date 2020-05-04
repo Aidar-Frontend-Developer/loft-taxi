@@ -4,6 +4,7 @@ import authReducer from './Auth/reducer';
 import cardReducer from './Profile/reducer';
 import addressesReducer from './Addresses/reducer';
 import routeReducer from './Routes/reducer';
+import { reducer as reducerForm } from 'redux-form';
 
 import rootSaga from './rootSaga';
 
@@ -12,6 +13,7 @@ const rootReducers = combineReducers({
     card: cardReducer,
     addresses: addressesReducer,
     route: routeReducer,
+    form: reducerForm,
 });
 
 const sagaMiddleware = createSagaMiddleware();

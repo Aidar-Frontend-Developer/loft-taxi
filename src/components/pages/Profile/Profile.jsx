@@ -11,6 +11,9 @@ import {
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import InfoBlock from '../../../components/InfoBlock';
 
@@ -142,7 +145,11 @@ class Profile extends React.Component {
                                 >
                                     Сохранить
                                 </StyledButton>
-                                <div className="toolTip"></div>
+                                <Tooltip title="Delete">
+                                    <IconButton aria-label="delete">
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Tooltip>
                             </form>
                         )}
                     </Wrapper>
