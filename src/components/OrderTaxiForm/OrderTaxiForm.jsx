@@ -5,24 +5,21 @@ import { fetchRouteRequest } from '../../modules/Routes/actions';
 
 import Grid from '@material-ui/core/Grid';
 
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-
 import { StyledOrderTaxiForm } from './StyledOrderTaxiForm';
 import { StyledButton } from '../shared/Button/StyledButton';
 
 import WarningBlock from '../../components/WarningBlock';
+import { Field, Form, reduxForm, formValueSelector } from 'redux-form';
+
+import { renderAutocompleteField } from '../formParts/autocomplete';
 
 class OrderTaxiForm extends React.Component {
     state = {
-        addressFrom: '',
-        addressTo: '',
         addressesList: [],
     };
 
     componentDidMount() {
-        const { fetchAddressesRequest } = this.props;
-        fetchAddressesRequest();
+        this.props.fetchAddressesRequest();
     }
 
     componentDidUpdate(prevProps) {
@@ -31,23 +28,19 @@ class OrderTaxiForm extends React.Component {
         }
     }
 
-    handleChangeSelect = (stateName, value = '') => {
-        this.setState({ [stateName]: value });
-    };
-
-    handleSubmit = e => {
-        e.preventDefault();
-        const { fetchRouteRequest } = this.props;
-        const { addressFrom, addressTo } = this.state;
-
-        fetchRouteRequest({ addressFrom, addressTo });
-    };
+    handleSubmit = values => this.props.fetchRouteRequest(values);
 
     render() {
         const { addressesList } = this.state;
         const {
             route: { coords },
             cardInfo: { cardAdded },
+            handleSubmit,
+            pristine,
+            submitting,
+            invalid,
+            addressFrom,
+            addressTo,
         } = this.props;
 
         return (
@@ -60,40 +53,33 @@ class OrderTaxiForm extends React.Component {
                             linkText="Сделать новый заказ"
                         />
                     ) : (
-                        <form onSubmit={this.handleSubmit}>
+                        <Form onSubmit={handleSubmit(this.handleSubmit)}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
-                                    <Autocomplete
-                                        getOptionDisabled={option =>
-                                            option === this.state.addressTo
-                                        }
+                                    <Field
+                                        required
                                         options={addressesList}
-                                        onChange={(event, value) =>
-                                            this.handleChangeSelect('addressFrom', value)
-                                        }
-                                        renderInput={params => (
-                                            <TextField {...params} type="text" label="Откуда" />
-                                        )}
+                                        name="addressFrom"
+                                        component={renderAutocompleteField}
+                                        label="Откуда"
+                                        getOptionDisabled={option => option === addressTo}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Autocomplete
-                                        getOptionDisabled={option =>
-                                            option === this.state.addressFrom
-                                        }
+                                    <Field
+                                        required
                                         options={addressesList}
-                                        onChange={(event, value) =>
-                                            this.handleChangeSelect('addressTo', value)
-                                        }
-                                        renderInput={params => (
-                                            <TextField {...params} type="text" label="Куда" />
-                                        )}
+                                        name="addressTo"
+                                        component={renderAutocompleteField}
+                                        label="Куда"
+                                        getOptionDisabled={option => option === addressFrom}
                                     />
                                 </Grid>
                             </Grid>
 
                             <StyledButton
                                 data-testid="auth-btn"
+                                disabled={pristine || submitting || invalid}
                                 type="submit"
                                 size="medium"
                                 variant="contained"
@@ -101,7 +87,7 @@ class OrderTaxiForm extends React.Component {
                             >
                                 Вызвать такси
                             </StyledButton>
-                        </form>
+                        </Form>
                     )
                 ) : (
                     <WarningBlock
@@ -116,15 +102,28 @@ class OrderTaxiForm extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({
-    addressesList: state.addresses.address,
-    cardInfo: state.card,
-    route: state.route,
-});
+const selector = formValueSelector('OrderTaxiForm');
+
+const mapStateToProps = state => {
+    return {
+        addressesList: state.addresses.address,
+        addressTo: selector(state, 'addressTo'),
+        addressFrom: selector(state, 'addressFrom'),
+        cardInfo: state.card,
+        route: state.route,
+    };
+};
 
 const mapDispatchToProps = {
     fetchAddressesRequest,
     fetchRouteRequest,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderTaxiForm);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(
+    reduxForm({
+        form: 'OrderTaxiForm',
+    })(OrderTaxiForm),
+);

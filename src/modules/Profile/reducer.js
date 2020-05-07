@@ -67,6 +67,13 @@ const cvc = handleActions(
     '',
 );
 
+const cardName = handleActions(
+    {
+        [getCardSuccess]: (_, action) => action.payload.cardName,
+    },
+    '',
+);
+
 const cardAdded = handleActions(
     {
         [postCardSuccess]: () => true,
@@ -88,6 +95,7 @@ export default combineReducers({
     error,
     hasCard,
     cardNumber,
+    cardName,
     expiryDate,
     cvc,
     cardAdded,

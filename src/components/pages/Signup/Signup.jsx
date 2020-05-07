@@ -9,7 +9,7 @@ import Alert from '@material-ui/lab/Alert';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 
-import { StyledSignup, StyledHeading, StyledForm, StyledTypography } from './StyledSignup';
+import { StyledSignup, StyledHeading, StyledTypography } from './StyledSignup';
 import { StyledButton } from '../../shared/Button/StyledButton';
 
 import { renderTextField } from '../../formParts/textField';
