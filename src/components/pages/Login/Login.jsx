@@ -1,31 +1,37 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { Field, Form, reduxForm } from 'redux-form';
 
-import { postLoginRequest, postLoginSuccess } from '../../../modules/Auth/actions';
+import { postLoginRequest, postLoginSuccess, resetErrors } from '../../../modules/Auth/actions';
 
-import TextField from '@material-ui/core/TextField';
+import Alert from '@material-ui/lab/Alert';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
+
+import { StyledLogin, StyledHeading, StyledTypography } from './StyledLogin';
 import { StyledButton } from '../../shared/Button/StyledButton';
 
-import { StyledLogin, StyledHeading, StyledForm, StyledTypography } from './StyledLogin';
+import { renderTextField } from '../../formParts/textField';
 
 class Login extends Component {
-    state = {
-        email: '',
-        password: '',
-    };
+    componentWillUnmount() {
+        this.props.resetErrors();
+    }
 
-    handleChangeInput = event => this.setState({ [event.target.name]: event.target.value });
-
-    handleSubmitForm = event => {
-        event.preventDefault();
-        this.props.postLoginRequest(this.state);
+    handleSubmitForm = values => {
+        this.props.postLoginRequest(values);
     };
 
     render() {
-        const { isAuthorized, onChangeToSignup, error } = this.props;
+        const {
+            auth: { isAuthorized, error },
+            onChangeToSignup,
+            handleSubmit,
+            pristine,
+            submitting,
+            invalid,
+        } = this.props;
         return isAuthorized ? (
             <Redirect to="/map" />
         ) : (
@@ -37,62 +43,80 @@ class Login extends Component {
                         Зарегистрируйтесь
                     </Link>
                 </StyledTypography>
-                <StyledForm onSubmit={this.handleSubmitForm}>
+                <Form onSubmit={handleSubmit(this.handleSubmitForm)}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <TextField
-                                error={!!error}
-                                margin="normal"
+                            <Field
                                 required
                                 fullWidth
+                                margin="normal"
                                 name="email"
+                                component={renderTextField}
                                 label="Имя пользователя"
-                                type="email"
-                                id="email"
                                 placeholder="Введите имя"
-                                onChange={this.handleChangeInput}
-                                helperText={error && 'Неверный логин'}
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                error={!!error}
-                                margin="normal"
+                            <Field
                                 required
                                 fullWidth
+                                margin="normal"
                                 name="password"
+                                component={renderTextField}
                                 label="Пароль"
                                 type="password"
-                                id="password"
                                 placeholder="Введите пароль"
-                                onChange={this.handleChangeInput}
-                                helperText={error && 'Неверный пароль'}
                             />
                         </Grid>
                     </Grid>
+                    {error && (
+                        <Alert style={{ marginTop: '8px' }} severity="error">
+                            {error}
+                        </Alert>
+                    )}
                     <StyledButton
                         data-testid="auth-btn"
                         type="submit"
                         size="medium"
                         variant="contained"
                         color="primary"
+                        disabled={pristine || submitting || invalid}
                     >
                         Войти
                     </StyledButton>
-                </StyledForm>
+                </Form>
             </StyledLogin>
         );
     }
 }
 
 const mapStateToProps = state => ({
-    isAuthorized: state.auth.isAuthorized,
-    error: state.auth.error,
+    auth: state.auth,
 });
 
 const mapDispatchToProps = {
     postLoginRequest,
     postLoginSuccess,
+    resetErrors,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+const validate = values => {
+    const errors = {};
+    if (!values.email) {
+        errors.email = 'Введите логин';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+        errors.email = 'Неверный логин';
+    }
+    if (!values.password) errors.password = 'Введите пароль';
+    return errors;
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(
+    reduxForm({
+        form: 'LoginForm',
+        validate,
+    })(Login),
+);

@@ -9,6 +9,7 @@ import {
     postRegisterSuccess,
     postRegisterFailure,
     postLogOut,
+    resetErrors,
 } from './actions';
 
 const isLoading = handleActions(
@@ -44,6 +45,7 @@ const error = handleActions(
         [postLoginFailure]: (_, action) => action.payload.error,
         [postRegisterFailure]: (_, action) => action.payload.error,
         [postLogOut]: () => null,
+        [resetErrors]: () => null,
     },
     null,
 );

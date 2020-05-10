@@ -25,10 +25,6 @@ export const StyledHeading = styled(Typography)`
     }
 `;
 
-export const StyledForm = styled.form`
-    text-align: right;
-`;
-
 export const StyledTypography = styled(Typography)`
     && {
         margin-bottom: 24px;

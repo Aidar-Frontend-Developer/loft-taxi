@@ -13,7 +13,6 @@ import { setItems, removeItems } from '../../components/services/localStorage';
 export function* authorizationSaga() {
     yield takeLatest(postLoginRequest, function*(action) {
         try {
-            debugger;
             const response = yield call(postLogin, action.payload);
             if (response.success) {
                 yield put(postLoginSuccess(response));

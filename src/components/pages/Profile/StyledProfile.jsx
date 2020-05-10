@@ -16,7 +16,6 @@ export const StyledProfile = styled(Paper)`
 `;
 
 export const StyledForm = styled.form`
-    text-align: center;
     max-width: 950px;
     padding: 60px 70px;
     background-color: ${props => props.theme.white};
@@ -46,6 +45,9 @@ export const StyledPaper = styled(Paper)`
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         padding: 40px 30px;
         border-radius: 10px;
+        min-height: 270px;
+        position: relative;
+        text-align: left;
     }
 `;
 
@@ -68,4 +70,10 @@ export const SubmitButton = styled(Button)`
             color: ${props => props.theme.white};
         }
     }
+`;
+
+export const CardLogo = styled.img`
+    position: absolute;
+    right: 20px;
+    top: 30px;
 `;

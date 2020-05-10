@@ -9,8 +9,12 @@ import {
 } from '../../../modules/Profile/actions';
 
 import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
+
+import { Field, Form, reduxForm } from 'redux-form';
+
+import { InputAdornment } from '@material-ui/core';
+import { RemoveRedEye } from '@material-ui/icons';
 
 import InfoBlock from '../../../components/InfoBlock';
 
@@ -20,17 +24,82 @@ import {
     StyledProfile,
     StyledPaper,
     Wrapper,
+    CardLogo,
 } from './StyledProfile';
 
 import { StyledButton } from '../../shared/Button/StyledButton';
 
+import { renderTextField } from '../../formParts/textField';
+
+import cardLogo from '../../../assets/images/card-logo.png';
+
+const cardNameFormatter = value => {
+    if (!value) return '';
+    const onlyLetters = value.replace(/[^A-Za-z\s]/, '');
+    return onlyLetters.toUpperCase() || '';
+};
+
+const cardNumberFormatter = value => {
+    if (!value) return '';
+
+    const onlyNum = value.replace(/[^\d\s]/g, '');
+    const reg = /\d{1,4}/g;
+    return (
+        onlyNum &&
+        onlyNum
+            .substring(0, 16)
+            .match(reg)
+            .join(' ')
+    );
+};
+
+const cardNumberParser = value => {
+    if (!value) return '';
+    return value.replace(/\s/g, '');
+};
+
+const expDateFormatter = value => {
+    if (!value || value === '/') return '';
+    const onlyNum = value.replace(/[^\d]/g, '');
+    if (onlyNum) {
+        let month = onlyNum.substring(0, 2);
+        let year = onlyNum.substring(2, 4);
+        if (+month > 12) month = '12';
+        return `${month}/${year}`;
+    }
+
+    return '';
+};
+
+const cvcFormatter = value => {
+    if (!value) return '';
+
+    const onlyNum = value.replace(/[^\d]/, '');
+    return onlyNum && onlyNum.substring(0, 3);
+};
+
+const profileSyncValidator = values => {
+    const requiredFields = ['cardName', 'cardNumber', 'expiryDate', 'cvc'];
+    const errors = {};
+    requiredFields.forEach(field => {
+        if (!values[field]) errors[field] = 'Это обязательное поле';
+    });
+    if (values['expiryDate']) {
+        let month = values['expiryDate'].substring(0, 2);
+        let year = values['expiryDate'].substring(3);
+        const date = new Date(+('20' + year), +month - 1);
+        if (+date < Date.now()) errors['expiryDate'] = 'Дата указана неверно';
+    }
+    if (!/^\S+\s\S+$/gi.test(values['cardName'])) errors['cardName'] = 'Укажите имя как на карте';
+    if (values['cardNumber'] && values['cardNumber'].length < 16)
+        errors['cardNumber'] = 'Номер карты должен состоять из 16 цифр';
+    if (!/^\d{3}$/gi.test(values['cvc'])) errors['cvc'] = 'CVV должен состоять из 3 цифр';
+    return errors;
+};
 class Profile extends React.Component {
     state = {
         token: '',
-        cardNumber: '',
-        expiryDate: '',
-        cardName: '',
-        cvc: '',
+        passwordIsMasked: true,
     };
 
     componentWillUnmount() {
@@ -38,7 +107,6 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ token: this.props.token });
         const { getCardRequest } = this.props;
         getCardRequest(this.props.token);
     }
@@ -55,17 +123,22 @@ class Profile extends React.Component {
         }
     }
 
-    handleSubmit = e => {
-        e.preventDefault();
-        const { postCardRequest } = this.props;
-        postCardRequest(this.state);
-        this.props.profileShowWarning();
+    handleSubmit = values => {
+        const { token } = this.props;
+        const { postCardRequest, profileShowWarning } = this.props;
+        postCardRequest({ ...values, token });
+        profileShowWarning();
     };
 
-    handlerInputChange = event => this.setState({ [event.target.name]: event.target.value });
+    togglePasswordMask = () => {
+        this.setState(prevState => ({
+            passwordIsMasked: !prevState.passwordIsMasked,
+        }));
+    };
 
     render() {
-        const { cardInfo } = this.props;
+        const { passwordIsMasked } = this.state;
+        const { cardInfo, handleSubmit, pristine, submitting, invalid } = this.props;
 
         return (
             <Paper>
@@ -81,55 +154,68 @@ class Profile extends React.Component {
                                 linkUrl="/map"
                             />
                         ) : (
-                            <form onSubmit={this.handleSubmit}>
+                            <Form onSubmit={handleSubmit(this.handleSubmit)}>
                                 <Grid container spacing={3}>
                                     <Grid item xs={12} sm={6}>
                                         <StyledPaper>
-                                            <div className="cardIco"></div>
-                                            <TextField
-                                                margin="normal"
+                                            <CardLogo src={cardLogo} alt="cardLogo" />
+                                            <Field
+                                                required
                                                 fullWidth
+                                                margin="normal"
                                                 name="cardNumber"
+                                                component={renderTextField}
                                                 label="Номер карты:"
-                                                type="password"
-                                                id="cardNumber"
                                                 placeholder="Введите номер карты"
-                                                onChange={this.handlerInputChange}
+                                                format={cardNumberFormatter}
+                                                parse={cardNumberParser}
                                             />
-
-                                            <TextField
-                                                margin="normal"
+                                            <Field
+                                                required
                                                 fullWidth
+                                                margin="normal"
                                                 name="expiryDate"
+                                                component={renderTextField}
                                                 label="Срок действия:"
                                                 type="text"
-                                                id="expiryDate"
-                                                placeholder="Введите срок действия"
-                                                onChange={this.handlerInputChange}
+                                                placeholder="__ /__"
+                                                format={expDateFormatter}
                                             />
                                         </StyledPaper>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <StyledPaper>
-                                            <TextField
-                                                margin="normal"
+                                            <Field
+                                                required
                                                 fullWidth
+                                                margin="normal"
                                                 name="cardName"
+                                                component={renderTextField}
                                                 label="Имя владельца:"
                                                 type="text"
-                                                id="cardName"
                                                 placeholder="Введите имя владельца"
-                                                onChange={this.handlerInputChange}
+                                                format={cardNameFormatter}
                                             />
-                                            <TextField
+                                            <Field
+                                                style={{ width: 200 }}
+                                                title="3 последние цифры на оборотной стороне карты"
+                                                required
                                                 margin="normal"
-                                                fullWidth
                                                 name="cvc"
+                                                component={renderTextField}
                                                 label="CVC:"
-                                                type="password"
-                                                id="cvc"
+                                                type={passwordIsMasked ? 'password' : 'text'}
                                                 placeholder="Введите CVC"
-                                                onChange={this.handlerInputChange}
+                                                format={cvcFormatter}
+                                                InputProps={{
+                                                    endAdornment: (
+                                                        <InputAdornment position="end">
+                                                            <RemoveRedEye
+                                                                onClick={this.togglePasswordMask}
+                                                            />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
                                             />
                                         </StyledPaper>
                                     </Grid>
@@ -139,11 +225,11 @@ class Profile extends React.Component {
                                     size="medium"
                                     variant="contained"
                                     color="primary"
+                                    disabled={pristine || submitting || invalid}
                                 >
                                     Сохранить
                                 </StyledButton>
-                                <div className="toolTip"></div>
-                            </form>
+                            </Form>
                         )}
                     </Wrapper>
                 </StyledProfile>
@@ -155,6 +241,7 @@ class Profile extends React.Component {
 const mapStateToProps = state => ({
     token: state.auth.token,
     cardInfo: state.card,
+    initialValues: state.card,
 });
 
 const mapDispatchToProps = {
@@ -164,4 +251,13 @@ const mapDispatchToProps = {
     profileHideWarning,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(
+    reduxForm({
+        form: 'Profile',
+        validate: profileSyncValidator,
+        enableReinitialize: true,
+    })(Profile),
+);
